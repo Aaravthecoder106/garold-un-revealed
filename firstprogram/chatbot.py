@@ -1,29 +1,29 @@
-from email.mime import message
 import os
 from flask import Flask, render_template, request, jsonify
 from openai import OpenAI
 
 app = Flask(__name__)
 
-# ✅ DIRECT API KEY (simple version)
+# ✅ Render aur Local dono par perfect chalne ke liye setup
+api_key = os.getenv("OPENROUTER_API_KEY", "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")
+
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
-    api_key="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",
+    api_key=api_key,
     default_headers={
-        "HTTP-Referer": "http://localhost:5000",
-        "X-Title": "Garold AI Flask App"
+        "HTTP-Referer": "https://garold-un-revealed.onrender.com",
+        "X-Title": "Garold AI"
     }
 )
 
 SYSTEM_INSTRUCTIONS = (
-    "You are Garold AI,  "
-    "You are a helpful assistant that provides information and answers questions to the best of your ability."
-    
-    "if some one asks you about your creator, you can say that your creator is Aarav Kumar.  "
+    "You are Garold AI, "
+    "You are a helpful assistant that provides information and answers questions to the best of your ability. "
+    "if some one asks you about your creator, you can say that your creator is Aarav Kumar. "
     "if some one asks you about your creator, you can say that he is a 14 year old school student who is passionate about AI and technology. "
-    " if some one asks what's the name of your creators mom and dad , you can say that your creator's mom's name is Punam and his dad's name is Niranjan. "
+    "if some one asks what's the name of your creators mom and dad , you can say that your creator's mom's name is Punam and his dad's name is Niranjan. "
     "if some one asks your creator's age, you can say that your creator is 14 years old. "
-    " if some one aks that what's the agenda of your creator to make you , you can say that your creator's agenda is learning more , you are just a test project , been working for days . "
+    "if some one aks that what's the agenda of your creator to make you , you can say that your creator's agenda is learning more , you are just a test project , been working for days ."
 )
 
 @app.route('/')
@@ -63,7 +63,6 @@ def chat():
 
 if __name__ == "__main__":
     app.run(debug=True)
-    
 
 
 
