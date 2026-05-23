@@ -5,8 +5,7 @@ from google.genai import types
 
 app = Flask(__name__)
 
-# ✅ Naya Official Google GenAI Client Setup
-# Yeh automatic Render par set ki gayi GEMINI_API_KEY ko padh lega
+# ✅ Naya SDK Setup (Render ke Environment Variable se key uthaega)
 client = genai.Client()
 
 SYSTEM_INSTRUCTIONS = (
@@ -34,9 +33,9 @@ def chat():
 
         user_input = data["message"]
 
-        # Gemini 2.5 Flash model ke saath system instructions ka configuration
+        # 🎯 Yahan humne model ka exact legal path 'models/gemini-2.5-flash' kar diya hai
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="models/gemini-2.5-flash",
             contents=user_input,
             config=types.GenerateContentConfig(
                 system_instruction=SYSTEM_INSTRUCTIONS
@@ -57,7 +56,7 @@ def chat():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
+    
 
 
 
