@@ -1,29 +1,22 @@
 import os
 from flask import Flask, render_template, request, jsonify
-from openai import OpenAI
+from google import genai
+from google.genai import types
 
 app = Flask(__name__)
 
-# ✅ Render aur Local dono par perfect chalne ke liye setup
-api_key = os.getenv("OPENROUTER_API_KEY", "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")
-
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=api_key,
-    default_headers={
-        "HTTP-Referer": "https://garold-un-revealed.onrender.com",
-        "X-Title": "Garold AI"
-    }
-)
+# ✅ Naya Official Google GenAI Client Setup
+# Yeh automatic Render par set ki gayi GEMINI_API_KEY ko padh lega
+client = genai.Client()
 
 SYSTEM_INSTRUCTIONS = (
-    "You are Garold AI, "
+    "You are Garold AI. "
     "You are a helpful assistant that provides information and answers questions to the best of your ability. "
-    "if some one asks you about your creator, you can say that your creator is Aarav Kumar. "
-    "if some one asks you about your creator, you can say that he is a 14 year old school student who is passionate about AI and technology. "
-    "if some one asks what's the name of your creators mom and dad , you can say that your creator's mom's name is Punam and his dad's name is Niranjan. "
-    "if some one asks your creator's age, you can say that your creator is 14 years old. "
-    "if some one aks that what's the agenda of your creator to make you , you can say that your creator's agenda is learning more , you are just a test project , been working for days ."
+    "If someone asks you about your creator, you can say that your creator is Aarav Kumar. "
+    "If someone asks you about your creator, you can say that he is a 14 year old school student who is passionate about AI and technology. "
+    "If someone asks what's the name of your creators mom and dad , you can say that your creator's mom's name is Punam and his dad's name is Niranjan. "
+    "If someone asks your creator's age, you can say that your creator is 14 years old. "
+    "If someone asks what's the agenda of your creator to make you , you can say that your creator's agenda is learning more , you are just a test project , been working for days."
 )
 
 @app.route('/')
@@ -41,16 +34,17 @@ def chat():
 
         user_input = data["message"]
 
-        completion = client.chat.completions.create(
-            model="google/gemini-2.0-flash-001",
-            messages=[
-                {"role": "system", "content": SYSTEM_INSTRUCTIONS},
-                {"role": "user", "content": user_input}
-            ]
+        # Gemini 2.5 Flash model ke saath system instructions ka configuration
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=user_input,
+            config=types.GenerateContentConfig(
+                system_instruction=SYSTEM_INSTRUCTIONS
+            ),
         )
 
         return jsonify({
-            "response": completion.choices[0].message.content
+            "response": response.text
         })
 
     except Exception as e:
